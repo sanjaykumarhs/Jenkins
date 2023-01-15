@@ -1,0 +1,44 @@
+pipeline {
+  agent any
+
+  parameters {
+    string(name: 'ENTER_THE_FIRST_NUMBER', defaultValue: '1', description: 'Enter valid number')
+    string(name: 'ENTER_THE_SECOND_NUMBER', defaultValue: '2', description: 'Enter valid number')
+    choice(name: 'SELECT_THE_OPERATION_TO_PERFORM', choices: ['Add', 'Subtraction', 'Multiplication', 'Division'], description: 'select something')
+  }
+
+  environment {
+    int a = "${ENTER_THE_FIRST_NUMBER}"
+    int b = "${ENTER_THE_SECOND_NUMBER}"
+    // def op = "${SELECT_THE_OPERATION_TO_PERFORM}"
+  }
+  stages {
+
+    stage('Clean Workspace') {
+      steps {
+        cleanWs()
+      }
+    }
+    
+    stage('addition') {
+      steps {
+        sh '''
+        #!/bin/bash
+        if [[ "$SELECT_THE_OPERATION_TO_PERFORM" == "Add" ]]
+        then
+        echo "The sum of $a and $b is $(($a+$b))"
+        elif [[ "$SELECT_THE_OPERATION_TO_PERFORM" == "Subtraction" ]]
+        then
+        echo "The subtraction of $a and $b is $(($a-$b))"
+        elif [[ "$SELECT_THE_OPERATION_TO_PERFORM" == "Multiplication" ]]
+        then
+        echo "The Product of $a and $b is $(($a*$b))"
+        else
+        echo "The division of $a and $b is $(($a/$b))"
+        fi
+
+        '''
+      }
+    }
+  }
+}
